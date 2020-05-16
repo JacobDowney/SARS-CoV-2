@@ -1,3 +1,5 @@
+from Translate import translate
+
 
 def read_from_file(filename):
     fasta = {}
@@ -105,12 +107,85 @@ def single_file():
     # translation = ...
     s = sequence[21562:25384]
 
-    # GAP 25384 -> 25393 (7)
+    # GAP 25384 -> 25393 (9)
 
     # 25393..26220
     # gene = orf3a
+    # product = orf3a protein
+    # protein id = https://www.ncbi.nlm.nih.gov/protein/1805293614
+    # translation = ...
+    orf3a = sequence[25392:26220]
 
-    print(s)
+    # Gap 26220 -> 26245 (25)
+
+    # 26245..26472
+    # gene = e
+    # product = envelope protein
+    # protein id = https://www.ncbi.nlm.nih.gov/protein/1805293615
+    # translation = ..
+    e = sequence[26244:26472]
+
+    # Gap 26472 -> 26523 (51)
+
+    # 26523..27191
+    # gene = m
+    # note = structual protein
+    # product = membrane glycoprotein
+    # protein id = https://www.ncbi.nlm.nih.gov/protein/1805293616
+    # translation = ...
+    m = sequence[26522:27191]
+
+    # Gap 27191 -> 27202 (11)
+
+    # 27202..27387
+    # gene = orf6
+    # product = orf 6 protein
+    # protein id = https://www.ncbi.nlm.nih.gov/protein/1805293617
+    # translation = ...
+    orf6 = sequence[27201:27387]
+
+    # Gap 27387 -> 27394 (7)
+
+    # 27394..27759
+    # gene = orf7a
+    # product = orf7a protein
+    # protein id = https://www.ncbi.nlm.nih.gov/protein/1805293618
+    # translation = ....
+    orf7a = sequence[27393:27759]
+
+    # Gap 27759 -> 27894 (135)
+
+    # 27894..28259
+    # gene = orf8
+    # product = orf8 protein
+    # protein id = https://www.ncbi.nlm.nih.gov/protein/1805293619
+    # translation = ...
+    orf8 = sequence[27893:28259]
+
+    # Gap 28259 -> 28274 (15)
+
+    # 28274..29533
+    # gene = N
+    # note = structual protein
+    # product = nucleocapsid phosphoprotein
+    # protein id = https://www.ncbi.nlm.nih.gov/protein/1805293620
+    # translation = ...
+    n = sequence[28273:29533]
+
+    # Gap 29533 -> 29558 (25)
+
+    # 29558..29674
+    # gene = orf10
+    # product = orf10 protein
+    # protein id = https://www.ncbi.nlm.nih.gov/protein/1805293621
+    # translation = ...
+    orf10 = sequence[29557:29674]
+
+    # 3'UTR
+    # 29675..29899
+    _3_utr = sequence[29674:29899]
+
+    print(translate(orf7a))
 
 
 
