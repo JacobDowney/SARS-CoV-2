@@ -1,27 +1,32 @@
+from io import StringIO
 
 def read_txt(filename):
     genbank = {}
     with open(filename, 'r') as file:
 
         # Locus
-        info = file.readline().strip().split()
-        genbank['locus'] = info[1]
+        genbank['locus'] = file.readline().strip().split()[1]
 
         # Definition
-        defs = file.readline().strip().split('  ')[1]
+        definition = StringIO()
+        definition.write(file.readline().strip().split('  ')[1])
         info = file.readline()
         while info[0] == ' ':
-            defs += info.strip()
+            definition.write(info.strip())
             info = file.readline()
-        genbank['definition'] = defs
+        genbank['definition'] = definition.getvalue()
 
         # Feature
         info = file.readline()
-        while info[0:8] != 'FEATURES':
+        str_ = 'FEATURES'
+        while info[0:len(str_)] != str_:
             info = file.readline()
 
         # start_stop
-        start_stop = file.readline().split()[1].split('..')
+        info = file.readline().split()
+        while info[0] != 'source':
+            info = file.readline().split()
+        start_stop = info[1].split('..')
         genbank['start_stop'] = (int(start_stop[0]) - 1, int(start_stop[1]))
 
         # country
@@ -47,7 +52,6 @@ def read_txt(filename):
         str_ = "ORIGIN"
         while info[0:len(str_)] != str_:
             info = file.readline().strip()
-        from io import StringIO
         sequence = StringIO()
         info = file.readline()
         while len(info) > 0:
