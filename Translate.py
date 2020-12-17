@@ -104,6 +104,8 @@ def translate(sequence):
         if start == -1:
             break
         for current in range(start, len(sequence), 3):
+            if current > len(sequence) - 3:
+                break
             mapping = codon_map[sequence[current:current+3]]
             if mapping == 'STOP':
                 break

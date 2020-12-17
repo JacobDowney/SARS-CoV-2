@@ -1,10 +1,14 @@
+from io import StringIO
+
 # Gonna work on finding similarities between two different sequences
 
 # Possibly move to C++ for more efficiency if I figure out how to do that
 
-
 # compare dna seq
 # compare amino acid seq
+
+# Global: Needelman-Wunch algorithm
+# Local: Smith-Waterman algorithm
 
 """
 Vocabulary from https://www.ncbi.nlm.nih.gov/books/NBK62051/
@@ -20,9 +24,9 @@ Homology: Similarity attributed to descent from a common ancestor. Homologous
 Orthologs: Homologous biological components (genes, proteins, structures) in
            different species that arose from a single component present in the
            common ancestor of the species; orthologs may or may not have similar
-           functions.
+           functions. Often evolves new functions.
 Paralogs: Homologous biological components within a single species that arose by
-          gene duplication.
+          gene duplication. Often retains the same functions.
 - much more
 """
 
@@ -61,39 +65,24 @@ def global_sequence_alignment(seq1, seq2, match=1, mismatch=-3, gap=-4):
     for i in range(1, v_len):
         matrix[i][0] = matrix[i-1][0] + gap
 
-    # BROKEN
-    # seq1 => hor
-    # seq2 => ver
+    # seq1 => hor, seq2 => ver
     for v in range(1, v_len):
         for h in range(1, h_len):
             pos_match = matrix[v-1][h-1]
             pos_match += match if seq1[h-1] == seq2[v-1] else mismatch
             v_h_gap = max(matrix[v-1][h], matrix[v][h-1]) + gap
             matrix[v][h] = max(pos_match, v_h_gap)
-            # possibly store where you came from, to get max matching & indexes
 
-    # follow how you got there
-    str1 = ""
-    str2 = ""
-    h = h_len - 1
-    v = v_len - 1
+    return matrix[-1][-1]
+
+def get_aligned_sequences(seq1, seq2, matrix):
+    str1 = StringIO()
+    str2 = StringIO()
+    h = len(seq1)
+    v = len(seq2)
     while h != 0 and v != 0:
-        if h == 0:
-            str1 = '-' + str1
-            str2 = seq2[v] + str2
-            v -= 1
-            continue
-        if v == 0:
-            str1 = seq1[h] + str1
-            str2 = '-' + str2
-            h -= 1
-            continue
-
-        # TODO: could be off
         l1 = seq1[h-1]
         l2 = seq2[v-1]
-
-        # base case, most times
         if matrix[v-1][h-1] >= max(matrix[v-1][h], matrix[v][h-1]):
             v -= 1
             h -= 1
@@ -103,32 +92,21 @@ def global_sequence_alignment(seq1, seq2, match=1, mismatch=-3, gap=-4):
         else:
             l2 = '-'
             h -= 1
-
-        str1 = l1 + str1
-        str2 = l2 + str2
-
-    return(str1, str2, matrix, matrix[v_len-1][h_len-1])
+        str1.write(l1)
+        str2.write(l2)
+    while h > 0:
+        str1.write(seq1[h])
+        str2.write('-')
+        h -= 1
+    while v > 0:
+        str1.write('-')
+        str2.write(seq2[v])
+        v -= 1
+    return(str1.getvalue()[::-1], str2.getvalue()[::-1])
 
 
 def print_matrix(matrix):
     for line in matrix:
         print(line)
-
-### ERROR IN WHERE IT GOES UP
-s1, s2, m, score = global_sequence_alignment("acggctc", "atggcctc")
-print_matrix(m)
-print(s1)
-print(s2)
-print(score)
-
-
-
-
-
-
-
-
-
-
 
 #
